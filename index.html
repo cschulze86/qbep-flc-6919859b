@@ -58,6 +58,7 @@ button { display: block; width: 100%; border: 0; border-radius: 10px;
   border: 1px dashed #9ab2bd; border-radius: 6px; padding: 4px 10px;
   font-size: 13px; margin-top: 8px; }
 .wb-note { font-size: 14px; color: #46606d; margin-top: 8px; }
+.gloss { font-size: 13px; color: #5c7482; font-weight: normal; }
 .footer { text-align: center; font-size: 11px; color: #7d939e;
   margin-top: 18px; line-height: 1.5; }
 .langrow { margin-top: 8px; }
@@ -530,13 +531,26 @@ function extraMark(v) {
 }
 
 /* ---------------- wellbeing module -------------------------------------- */
+/* Wellbeing questions and feelings options are CHILD-facing: primary text
+   follows the assessment language (the facilitator reads it to the child).
+   When the interface language differs, a small gloss line in the other
+   language keeps the facilitator oriented. The form carries EN + MY only
+   for this section, so non-Burmese assessment languages read English. */
+function wbDual(lab) {
+  var prim = (state.lang === "burmese" && lab.my) ? lab.my : (lab.en || "");
+  var gloss = "";
+  if (state.lang === "burmese" && uiLang === "en" && lab.en) gloss = lab.en;
+  else if (state.lang !== "burmese" && uiLang === "my" && lab.my) gloss = lab.my;
+  return { prim: prim, gloss: gloss };
+}
 function showWb(idx) {
   lastRender = function () { showWb(idx); };
   var shortF = DATA.wellbeing.short_form, feels = DATA.wellbeing.feels;
   var all = shortF.concat(feels);
   if (idx >= all.length) return showResults();
   var name = all[idx], lab = DATA.wellbeing.labels[name] || {};
-  var qText = (state.lang === "burmese" && lab.my) ? lab.my : (lab.en || name);
+  var d = wbDual(lab);
+  var qText = d.prim || name;
   var isFace = idx < shortF.length;
   var html = header() + '<div class="progress">' + T("wbLabel") + " · " +
     (idx + 1) + "/" + all.length + "</div>";
@@ -545,7 +559,8 @@ function showWb(idx) {
       ')">&#8592; ' + T("back") + "</button>";
   }
   if (idx === 0) html += '<div class="instr">' + T("wbIntro") + "</div>";
-  html += '<div class="card"><div class="stim small">' + esc(qText) + "</div>";
+  html += '<div class="card"><div class="stim small">' + esc(qText) + "</div>" +
+    (d.gloss ? '<div class="gloss">' + esc(d.gloss) + "</div>" : "");
   if (isFace) {
     var f = "", i;
     for (i = 0; i < 5; i++) {
@@ -554,12 +569,15 @@ function showWb(idx) {
     }
     html += '<div class="faces">' + f + "</div>";
   } else {
-    var choices = DATA.choices.feels, btns = "", j, c;
+    var choices = DATA.choices.feels, btns = "", j, c, cd;
     for (j = 0; j < choices.length; j++) {
       c = choices[j];
       if (c.value === "88" || c.value === "99") continue;
+      cd = wbDual(c);
       btns += '<button class="opt" onclick="wbAnswer(\'' + name + "'," +
-        c.value + "," + idx + ')">' + esc(choiceLabel(c)) + "</button>";
+        c.value + "," + idx + ')">' + esc(cd.prim || c.value) +
+        (cd.gloss ? '<br><span class="gloss">' + esc(cd.gloss) + "</span>" : "") +
+        "</button>";
     }
     html += btns;
   }
