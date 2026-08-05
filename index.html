@@ -592,5 +592,59 @@ function restart() { state = null; showSetup(); }
 
 showSetup();
 </script>
-<script>if("serviceWorker" in navigator &&(location.protocol==="https:"||location.hostname==="localhost")){navigator.serviceWorker.register("sw.js");}</script></body>
+<style>
+#instBar { position: fixed; left: 0; right: 0; bottom: 0; background: #0b6c96;
+  color: #fff; padding: 12px 14px; display: none; z-index: 99;
+  box-shadow: 0 -2px 8px rgba(0,0,0,.25); }
+#instBar .t { font-size: 14px; line-height: 1.4; margin-bottom: 8px; }
+#instBar button { background: #fff; color: #0b6c96; font-weight: bold;
+  font-size: 16px; padding: 10px; border-radius: 8px; width: 100%; }
+#instBar .x { position: absolute; top: 4px; right: 10px; background: none;
+  color: #fff; width: auto; font-size: 20px; padding: 2px 6px; }
+</style>
+<div id="instBar">
+<button class="x" onclick="document.getElementById('instBar').style.display='none'">&times;</button>
+<div class="t" id="instTxt"></div>
+<button id="instBtn" style="display:none">Install / ထည့်သွင်းရန်</button>
+</div>
+<script>
+if ("serviceWorker" in navigator &&
+    (location.protocol === "https:" || location.hostname === "localhost")) {
+  navigator.serviceWorker.register("sw.js");
+}
+(function () {
+  var standalone = window.matchMedia &&
+    window.matchMedia("(display-mode: standalone)").matches ||
+    window.navigator.standalone === true;
+  if (standalone) return;
+  var bar = document.getElementById("instBar");
+  var txt = document.getElementById("instTxt");
+  var btn = document.getElementById("instBtn");
+  var deferred = null;
+  window.addEventListener("beforeinstallprompt", function (e) {
+    e.preventDefault();
+    deferred = e;
+    txt.innerHTML = "Install this tool as an app - it will work offline. " +
+      "ဤကိရိယာကို အက်ပ်အဖြစ် ထည့်သွင်းနိုင်ပြီး အင်တာနက်မလိုဘဲ အသုံးပြုနိုင်ပါမည်။";
+    btn.style.display = "block";
+    bar.style.display = "block";
+  });
+  btn.onclick = function () {
+    if (!deferred) return;
+    deferred.prompt();
+    deferred.userChoice.then(function () {
+      bar.style.display = "none"; deferred = null;
+    });
+  };
+  window.addEventListener("appinstalled", function () {
+    bar.style.display = "none";
+  });
+  var ua = navigator.userAgent;
+  if (/iPhone|iPad|iPod/.test(ua) && !window.MSStream) {
+    txt.innerHTML = "To install: tap the Share button, then " +
+      "<b>Add to Home Screen</b>.";
+    bar.style.display = "block";
+  }
+})();
+</script></body>
 </html>
