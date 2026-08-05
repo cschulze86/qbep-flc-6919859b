@@ -678,7 +678,7 @@ showSetup();
 <div id="instBar">
 <button class="x" onclick="document.getElementById('instBar').style.display='none'">&times;</button>
 <div class="t" id="instTxt"></div>
-<button id="instBtn" style="display:none">Install / ထည့်သွင်းရန်</button>
+<button id="instBtn" style="display:none">Install ထည့်သွင်းရန်</button>
 </div>
 <script>
 if ("serviceWorker" in navigator &&
@@ -697,8 +697,7 @@ if ("serviceWorker" in navigator &&
   window.addEventListener("beforeinstallprompt", function (e) {
     e.preventDefault();
     deferred = e;
-    txt.innerHTML = "Install this tool as an app - it will work offline. " +
-      "ဤကိရိယာကို အက်ပ်အဖြစ် ထည့်သွင်းနိုင်ပြီး အင်တာနက်မလိုဘဲ အသုံးပြုနိုင်ပါမည်။";
+    txt.innerHTML = "Install this tool as an app - it will work offline. ဤကိရိယာကို အက်ပ်အဖြစ် ထည့်သွင်းနိုင်ပြီး အင်တာနက်မလိုဘဲ အသုံးပြုနိုင်ပါမည်။";
     btn.style.display = "block";
     bar.style.display = "block";
   });
@@ -714,8 +713,7 @@ if ("serviceWorker" in navigator &&
   });
   var ua = navigator.userAgent;
   if (/iPhone|iPad|iPod/.test(ua) && !window.MSStream) {
-    txt.innerHTML = "To install: tap the Share button, then " +
-      "<b>Add to Home Screen</b>.";
+    txt.innerHTML = "To install: tap the Share button, then Add to Home Screen. ထည့်သွင်းရန် - Share ခလုတ်ကို နှိပ်ပြီး Add to Home Screen ကို ရွေးပါ။";
     bar.style.display = "block";
   }
 })();
