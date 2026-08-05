@@ -532,17 +532,13 @@ function extraMark(v) {
 }
 
 /* ---------------- wellbeing module -------------------------------------- */
-/* Wellbeing questions and feelings options are CHILD-facing: primary text
-   follows the assessment language (the facilitator reads it to the child).
-   When the interface language differs, a small gloss line in the other
-   language keeps the facilitator oriented. The form carries EN + MY only
-   for this section, so non-Burmese assessment languages read English. */
+/* Wellbeing items exist in English and Myanmar only, so they follow the
+   NAVIGATION language (Charles, 2026-08-05) - whatever the facilitator has
+   the interface set to is the language the questions and answer options
+   render in, regardless of the assessment language. */
 function wbDual(lab) {
-  var prim = (state.lang === "burmese" && lab.my) ? lab.my : (lab.en || "");
-  var gloss = "";
-  if (state.lang === "burmese" && uiLang === "en" && lab.en) gloss = lab.en;
-  else if (state.lang !== "burmese" && uiLang === "my" && lab.my) gloss = lab.my;
-  return { prim: prim, gloss: gloss };
+  var prim = (uiLang === "my" && lab.my) ? lab.my : (lab.en || "");
+  return { prim: prim, gloss: "" };
 }
 function showWb(idx) {
   lastRender = function () { showWb(idx); };
