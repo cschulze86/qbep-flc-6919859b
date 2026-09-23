@@ -28,7 +28,10 @@ body {
   font-size: 11px; border-radius: 4px; padding: 1px 7px; margin-bottom: 6px;
   letter-spacing: .4px; }
 .stim { font-size: 26px; line-height: 1.8; text-align: left; padding: 8px 2px;
-  word-wrap: break-word; }
+  word-wrap: break-word; white-space: pre-line; }
+/* source stimuli carry line breaks (two problems, option lists, one
+   sentence per line); keep them, as the form does */
+.facil div { white-space: pre-line; }
 .stim.grid { text-align: center; letter-spacing: 0; line-height: 2; }
 .stim.grid .tok { display: inline-block; margin: 0 9px; }
 /* F5: fractions stacked (numerator over denominator) */
